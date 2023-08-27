@@ -1,25 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+import {Component} from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import {Route, Switch} from 'react-router-dom'
+import Register from './components/Register'
+import Home from './components/Home'
+
+import NotFound from './components/NotFound'
+
+import RegisterContext from './context/RegisterContext'
+
+import './App.css'
+
+class App extends Component {
+  state = {
+    name: '',
+    topic: 'Arts and Culture',
+    isRegistered: false,
+    showError: false,
+  }
+
+  changeName = name => {
+    this.setState({name})
+  }
+
+  changeTopic = topic => {
+    this.setState({topic})
+  }
+
+  registerName = () => {
+    this.setState({isRegistered: true})
+  }
+
+  updateError = () => {
+    this.setState({showError: true})
+  }
+
+  render() {
+    const {name, topic, isRegistered, showError} = this.state
+    return (
+      <RegisterContext.Provider
+        value={{
+          name,
+          topic,
+          isRegistered,
+          showError,
+          changeName: this.changeName,
+          changeTopic: this.changeTopic,
+          registerName: this.registerName,
+          updateError: this.updateError,
+        }}
+      >
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/register" component={Register} />
+          <NotFound />
+        </Switch>
+      </RegisterContext.Provider>
+    )
+  }
 }
 
-export default App;
+export default App
